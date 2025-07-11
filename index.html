@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Focus Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="./main.js"></script>
+    <style>
+      .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+      
+      .dark .glass-card {
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .dark .gradient-bg {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      }
+
+      .modern-btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .modern-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+      }
+
+      .modern-btn:hover::before {
+        left: 100%;
+      }
+
+      .progress-circle {
+        transition: stroke-dashoffset 0.3s ease-in-out;
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+
+      .float-animation {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes pulse-glow {
+        0%, 100% { 
+          box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        50% { 
+          box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+        }
+      }
+
+      .pulse-glow {
+        animation: pulse-glow 2s ease-in-out infinite;
+      }
+
+      .hover-lift {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .hover-lift:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
+
+      @media (max-width: 640px) {
+        .time-display {
+          font-size: 3rem;
+        }
+        .date-display {
+          font-size: 1rem;
+        }
+      }
+
+      @media (min-width: 641px) and (max-width: 1024px) {
+        .time-display {
+          font-size: 5rem;
+        }
+        .date-display {
+          font-size: 1.25rem;
+        }
+      }
+
+      @media (min-width: 1025px) {
+        .time-display {
+          font-size: 6rem;
+        }
+        .date-display {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen gradient-bg transition-all duration-500">
+    <div id="app" class="min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 lg:p-12">
+      <header class="flex justify-between items-center w-full max-w-6xl mx-auto mb-8 lg:mb-12">
+        <div class="flex items-center space-x-3 sm:space-x-4">
+          <div class="w-3 h-3 bg-blue-400 rounded-full pulse-glow"></div>
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-light text-white">Focus</h1>
+        </div>
+        <div class="flex items-center space-x-3 sm:space-x-4">
+          <button id="theme-toggle" class="p-2 sm:p-3 glass-card rounded-xl backdrop-blur-md border border-white/20 hover:bg-white/30 hover:backdrop-blur-lg transition-all duration-300 modern-btn shadow-md">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path id="theme-icon" d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+          </button>
+          <button id="settings-btn" class="p-2 sm:p-3 glass-card rounded-xl backdrop-blur-md border border-white/20 hover:bg-white/30 hover:backdrop-blur-lg transition-all duration-300 modern-btn shadow-md">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+      <div class="w-full flex-1 flex flex-col justify-center items-center">
+        <div class="w-full max-w-5xl mx-auto mb-8 lg:mb-12 flex-1 flex items-center justify-center">
+          <div class="glass-card rounded-3xl w-full flex flex-col sm:flex-row items-center justify-between gap-8 sm:gap-12 p-6 sm:p-12 lg:p-20 shadow-xl min-h-[400px] lg:min-h-[500px]">
+            <div class="flex-1 flex flex-col items-center justify-center min-w-[140px]">
+              <div id="current-time" class="font-extralight text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight mb-1 time-display flex items-baseline justify-center">
+                12:00
+                <span id="current-ampm" class="ml-2 text-lg sm:text-2xl font-light text-white/70 align-bottom">AM</span>
+              </div>
+              <div id="current-date" class="text-white/70 font-light text-base sm:text-lg date-display">
+                Monday, January 1, 2024
+              </div>
+            </div>
+            <div class="hidden sm:block h-24 w-px bg-white/10 mx-6"></div>
+            <div class="flex-1 flex flex-col items-center justify-center min-w-[180px]">
+              <div class="relative w-36 h-36 sm:w-44 sm:h-44 lg:w-56 lg:h-56 mb-4">
+                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+                  <circle 
+                    id="progress-circle" 
+                    cx="50" 
+                    cy="50" 
+                    r="45" 
+                    fill="none" 
+                    stroke="url(#gradient)" 
+                    stroke-width="3" 
+                    stroke-linecap="round" 
+                    stroke-dasharray="283" 
+                    stroke-dashoffset="283"
+                    class="progress-circle"
+                  />
+                  <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#60A5FA"/>
+                      <stop offset="100%" style="stop-color:#A78BFA"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="text-center">
+                    <div id="timer-display" class="text-2xl sm:text-3xl lg:text-4xl font-light text-white mb-1">25:00</div>
+                    <div id="timer-label" class="text-xs sm:text-sm lg:text-base text-white/60 uppercase tracking-wider">Focus Time</div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center justify-center gap-2 sm:gap-4 mt-2">
+                <button id="timer-start" class="px-4 py-2 sm:px-6 sm:py-3 glass-card border border-white/20 bg-white/20 text-white rounded-xl font-medium transition-all duration-300 hover:bg-white/30 hover:backdrop-blur-lg modern-btn shadow-md text-sm sm:text-base">
+                  <svg class="w-4 h-4 mr-1 inline" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                  </svg>
+                  Start
+                </button>
+                <button id="timer-pause" class="px-4 py-2 sm:px-6 sm:py-3 glass-card border border-white/20 bg-white/10 text-white rounded-xl font-medium transition-all duration-300 hover:bg-white/20 hover:backdrop-blur-lg modern-btn shadow-md text-sm sm:text-base" disabled>
+                  <svg class="w-4 h-4 mr-1 inline" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                  </svg>
+                  Pause
+                </button>
+                <button id="timer-reset" class="px-4 py-2 sm:px-6 sm:py-3 glass-card border border-white/20 bg-white/10 text-white rounded-xl font-medium transition-all duration-300 hover:bg-white/20 hover:backdrop-blur-lg modern-btn shadow-md text-sm sm:text-base">
+                  <svg class="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                  </svg>
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="settings-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden">
+      <div class="flex items-center justify-center min-h-screen p-4 sm:p-6">
+        <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full">
+          <div class="flex items-center justify-between mb-6 sm:mb-8">
+            <h2 class="text-xl sm:text-2xl font-light text-white">Settings</h2>
+            <button id="close-settings" class="p-2 glass-card border border-white/20 bg-white/10 hover:bg-white/20 hover:backdrop-blur-lg rounded-xl transition-colors shadow-md">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="space-y-6 sm:space-y-8">
+            <div>
+              <label class="block text-sm font-medium text-white/80 mb-4">Focus Duration</label>
+              <input type="range" id="focus-duration" min="15" max="60" value="25" class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer">
+              <div class="flex justify-between text-sm text-white/60 mt-2">
+                <span>15 min</span>
+                <span id="focus-duration-value" class="text-white">25 min</span>
+                <span>60 min</span>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white/80 mb-4">Break Duration</label>
+              <input type="range" id="break-duration" min="5" max="30" value="5" class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer">
+              <div class="flex justify-between text-sm text-white/60 mt-2">
+                <span>5 min</span>
+                <span id="break-duration-value" class="text-white">5 min</span>
+                <span>30 min</span>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white/80 mb-4">Time Format</label>
+              <select id="time-format" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="12">12 Hour</option>
+                <option value="24">24 Hour</option>
+              </select>
+            </div>
+            <div class="space-y-4">
+              <label class="flex items-center">
+                <input type="checkbox" id="auto-break" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500">
+                <span class="ml-3 text-white/80 text-sm sm:text-base">Auto-start breaks</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" id="notifications" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500">
+                <span class="ml-3 text-white/80 text-sm sm:text-base">Enable notifications</span>
+              </label>
+            </div>
+          </div>
+          <div class="mt-8 sm:mt-10 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4">
+            <button id="reset-settings" class="px-6 py-3 glass-card border border-white/20 bg-white/10 text-white/70 hover:text-white hover:bg-white/20 hover:backdrop-blur-lg rounded-xl transition-all duration-300 text-sm sm:text-base shadow-md">
+              Reset
+            </button>
+            <button id="save-settings" class="px-6 py-3 glass-card border border-white/20 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:bg-white/20 hover:backdrop-blur-lg modern-btn text-sm sm:text-base shadow-md">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
