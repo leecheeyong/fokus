@@ -18,6 +18,7 @@
         chimeSound: true,
       };
 
+      let tempSettings = {};
       let timerState = {
         isRunning: false,
         isPaused: false,
@@ -278,19 +279,20 @@
       }
 
       function openSettings(elements) {
+        tempSettings = { ...dashboardState };
         elements.settingsModal.classList.remove("hidden");
-        elements.focusDuration.value = dashboardState.focusDuration;
-        elements.breakDuration.value = dashboardState.breakDuration;
-        elements.timeFormat.value = dashboardState.timeFormat;
-        elements.autoBreak.checked = dashboardState.autoBreak;
-        elements.notifications.checked = dashboardState.notifications;
-        elements.chimeSound.checked = dashboardState.chimeSound;
+        elements.focusDuration.value = tempSettings.focusDuration;
+        elements.breakDuration.value = tempSettings.breakDuration;
+        elements.timeFormat.value = tempSettings.timeFormat;
+        elements.autoBreak.checked = tempSettings.autoBreak;
+        elements.notifications.checked = tempSettings.notifications;
+        elements.chimeSound.checked = tempSettings.chimeSound;
         elements.focusDurationValue.textContent =
-          dashboardState.focusDuration + " min";
+          tempSettings.focusDuration + " min";
         elements.breakDurationValue.textContent =
-          dashboardState.breakDuration + " min";
+          tempSettings.breakDuration + " min";
         document.querySelectorAll(".gradient-option").forEach((btn) => {
-          if (btn.dataset.gradient === dashboardState.backgroundGradient) {
+          if (btn.dataset.gradient === tempSettings.backgroundGradient) {
             btn.classList.add("ring-2", "ring-blue-400");
           } else {
             btn.classList.remove("ring-2", "ring-blue-400");
@@ -303,12 +305,7 @@
       }
 
       function applySettings(elements) {
-        dashboardState.focusDuration = parseInt(elements.focusDuration.value);
-        dashboardState.breakDuration = parseInt(elements.breakDuration.value);
-        dashboardState.timeFormat = elements.timeFormat.value;
-        dashboardState.autoBreak = elements.autoBreak.checked;
-        dashboardState.notifications = elements.notifications.checked;
-        dashboardState.chimeSound = elements.chimeSound.checked;
+        dashboardState = { ...dashboardState, ...tempSettings };
         saveSettings();
         applyBackgroundGradient();
         resetTimer(elements);
@@ -357,28 +354,33 @@
           resetTimer(elements),
         );
         elements.focusDuration.addEventListener("input", (e) => {
+          tempSettings.focusDuration = parseInt(e.target.value);
           elements.focusDurationValue.textContent = e.target.value + " min";
-          if (
-            !timerState.isRunning &&
-            !timerState.isPaused &&
-            !timerState.isBreak
-          ) {
-            timerState.currentTime = parseInt(e.target.value) * 60;
-            updateTimerDisplay(elements);
-            updateProgressCircle(elements);
-          }
         });
         elements.breakDuration.addEventListener("input", (e) => {
+          tempSettings.breakDuration = parseInt(e.target.value);
           elements.breakDurationValue.textContent = e.target.value + " min";
-          if (
-            !timerState.isRunning &&
-            !timerState.isPaused &&
-            timerState.isBreak
-          ) {
-            timerState.currentTime = parseInt(e.target.value) * 60;
-            updateTimerDisplay(elements);
-            updateProgressCircle(elements);
-          }
+        });
+        elements.timeFormat.addEventListener("change", (e) => {
+          tempSettings.timeFormat = e.target.value;
+        });
+        elements.autoBreak.addEventListener("change", (e) => {
+          tempSettings.autoBreak = e.target.checked;
+        });
+        elements.notifications.addEventListener("change", (e) => {
+          tempSettings.notifications = e.target.checked;
+        });
+        elements.chimeSound.addEventListener("change", (e) => {
+          tempSettings.chimeSound = e.target.checked;
+        });
+        document.querySelectorAll(".gradient-option").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            tempSettings.backgroundGradient = this.dataset.gradient;
+            document
+              .querySelectorAll(".gradient-option")
+              .forEach((b) => b.classList.remove("ring-2", "ring-blue-400"));
+            this.classList.add("ring-2", "ring-blue-400");
+          });
         });
         elements.settingsModal.addEventListener("click", (e) => {
           if (e.target === elements.settingsModal) {
@@ -397,16 +399,6 @@
               startTimer(elements);
             }
           }
-        });
-        document.querySelectorAll(".gradient-option").forEach((btn) => {
-          btn.addEventListener("click", function () {
-            dashboardState.backgroundGradient = this.dataset.gradient;
-            applyBackgroundGradient();
-            document
-              .querySelectorAll(".gradient-option")
-              .forEach((b) => b.classList.remove("ring-2", "ring-blue-400"));
-            this.classList.add("ring-2", "ring-blue-400");
-          });
         });
       }
 
@@ -565,6 +557,7 @@
           <div class="w-3 h-3 bg-blue-400 rounded-full pulse-glow"></div>
           <h1 class="text-2xl sm:text-3xl lg:text-4xl font-light text-white">
             Fokus
+            <p class="text-gray-200 text-sm">concentrate unlike a normie</p>
           </h1>
         </div>
         <div class="flex items-center space-x-3 sm:space-x-4">
@@ -787,15 +780,15 @@
               <input
                 type="range"
                 id="focus-duration"
-                min="15"
-                max="60"
+                min="5"
+                max="120"
                 value="25"
                 class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
               />
               <div class="flex justify-between text-sm text-white/60 mt-2">
-                <span>15 min</span>
+                <span>5 min</span>
                 <span id="focus-duration-value" class="text-white">25 min</span>
-                <span>60 min</span>
+                <span>120 min</span>
               </div>
             </div>
             <div>
