@@ -58,8 +58,6 @@
           resetSettings: document.getElementById("reset-settings"),
           focusDurationValue: document.getElementById("focus-duration-value"),
           breakDurationValue: document.getElementById("break-duration-value"),
-          fullScreen: document.getElementById("full-screen"),
-          backgroundAnimation: document.getElementById("background-animation"),
         };
 
         loadSettings();
@@ -317,8 +315,6 @@
         elements.autoBreak.checked = tempSettings.autoBreak;
         elements.notifications.checked = tempSettings.notifications;
         elements.chimeSound.checked = tempSettings.chimeSound;
-        elements.backgroundAnimation.checked = tempSettings.backgroundAnimation;
-        elements.fullScreen.checked = tempSettings.fullScreen;
         elements.focusDurationValue.textContent = tempSettings.focusDuration + " min";
         elements.breakDurationValue.textContent = tempSettings.breakDuration + " min";
         document.querySelectorAll(".gradient-option").forEach((btn) => {
@@ -336,10 +332,8 @@
 
       function applySettings(elements) {
         dashboardState = { ...dashboardState, ...tempSettings };
-        setFullScreen(dashboardState.fullScreen);
         saveSettings();
         applyBackgroundGradient();
-        updateAnimatedBg();
         resetTimer(elements);
         closeSettings(elements);
       }
@@ -352,24 +346,6 @@
         dashboardState.notifications = true;
         dashboardState.chimeSound = true;
         openSettings(elements);
-      }
-
-      function updateAnimatedBg() {
-        const bg = document.getElementById("animated-bg");
-        if (dashboardState.backgroundAnimation) {
-          bg.style.visibility = "visible";
-          bg.style.opacity = "1";
-          // Restart animation by forcing reflow
-          bg.querySelectorAll('.animated-shape').forEach(el => {
-            el.style.animation = 'none';
-            // Force reflow
-            void el.offsetWidth;
-            el.style.animation = '';
-          });
-        } else {
-          bg.style.visibility = "hidden";
-          bg.style.opacity = "0";
-        }
       }
 
       function setupEventListeners(elements) {
@@ -423,9 +399,6 @@
         elements.chimeSound.addEventListener("change", (e) => {
           tempSettings.chimeSound = e.target.checked;
         });
-        elements.backgroundAnimation.addEventListener("change", (e) => {
-          tempSettings.backgroundAnimation = e.target.checked;
-        });
         document.querySelectorAll(".gradient-option").forEach((btn) => {
           btn.addEventListener("click", function () {
             tempSettings.backgroundGradient = this.dataset.gradient;
@@ -464,7 +437,6 @@
 
       document.addEventListener("DOMContentLoaded", () => {
         initDashboard();
-        updateAnimatedBg();
       });
     </script>
     <style>
@@ -651,48 +623,9 @@
         opacity: 0;
         transition: opacity 0.2s;
       }
-      .animated-bg {
-        pointer-events: none;
-        position: fixed;
-        z-index: 0;
-        inset: 0;
-        overflow: hidden;
-      }
-      .animated-shape {
-        position: absolute;
-        border-radius: 9999px;
-        filter: blur(32px);
-        opacity: 0.25;
-        animation: float-anim 32s linear infinite;
-      }
-      .animated-shape1 {
-        width: 320px; height: 320px; background: #a78bfa;
-        left: 5vw; top: 10vh;
-        animation-delay: 0s;
-      }
-      .animated-shape2 {
-        width: 220px; height: 220px; background: #60a5fa;
-        right: 10vw; top: 30vh;
-        animation-delay: 8s;
-      }
-      .animated-shape3 {
-        width: 180px; height: 180px; background: #f472b6;
-        left: 30vw; bottom: 10vh;
-        animation-delay: 16s;
-      }
-      @keyframes float-anim {
-        0% { transform: translateY(0) scale(1); }
-        50% { transform: translateY(-40px) scale(1.08); }
-        100% { transform: translateY(0) scale(1); }
-      }
     </style>
   </head>
   <body class="min-h-screen gradient-bg transition-all duration-500">
-    <div id="animated-bg" class="animated-bg" style="display:none">
-      <div class="animated-shape animated-shape1"></div>
-      <div class="animated-shape animated-shape2"></div>
-      <div class="animated-shape animated-shape3"></div>
-    </div>
     <div
       id="app"
       class="min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 lg:p-12"
@@ -1022,6 +955,15 @@
                 <button
                   type="button"
                   class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
+                  data-gradient="gradient-night"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #232526 0%,
+                      #414345 100%
+                    );
+                  "
+                ></button>
               </div>
             </div>
             <div class="space-y-4">
@@ -1054,16 +996,6 @@
                 <span class="ml-3 text-white/80 text-sm sm:text-base"
                   >Chime sound on session end</span
                 >
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  id="background-animation"
-                  class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500"
-                />
-                <span class="ml-3 text-white/80 text-sm sm:text-base">
-                  Animated Background
-                </span>
               </label>
             </div>
           </div>
