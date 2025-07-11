@@ -1,2 +1,5 @@
-# fokus
-A simple focus dashboard for normies
+<img src="/logo.png" width="100">
+
+# Fokus
+Concentrate unlike a normie
+
