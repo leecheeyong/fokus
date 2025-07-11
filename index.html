@@ -16,6 +16,7 @@
         notifications: true,
         backgroundGradient: "gradient-bg",
         chimeSound: true,
+        fullScreen: false,
       };
 
       let tempSettings = {};
@@ -32,6 +33,7 @@
           themeToggle: document.getElementById("theme-toggle"),
           themeIcon: document.getElementById("theme-icon"),
           settingsBtn: document.getElementById("settings-btn"),
+          fullscreenBtn: document.getElementById("fullscreen-btn"),
           currentTime: document.getElementById("current-time"),
           currentDate: document.getElementById("current-date"),
           timerDisplay: document.getElementById("timer-display"),
@@ -52,6 +54,7 @@
           resetSettings: document.getElementById("reset-settings"),
           focusDurationValue: document.getElementById("focus-duration-value"),
           breakDurationValue: document.getElementById("break-duration-value"),
+          fullScreen: document.getElementById("full-screen"),
         };
 
         loadSettings();
@@ -197,7 +200,7 @@
             : "Great job! Time for a break.";
           new Notification(title, {
             body: body,
-            icon: "/vite.svg",
+            icon: "/logo.png",
           });
         }
         if (dashboardState.chimeSound) {
@@ -278,6 +281,28 @@
         body.classList.add(dashboardState.backgroundGradient || "gradient-bg");
       }
 
+      function updateFullscreenIcon(isFull) {
+        const iconPath = document.getElementById("fullscreen-icon-path");
+        if (isFull) {
+          iconPath.setAttribute("d", "M6 18L18 6M6 6l12 12"); // X icon for exit
+        } else {
+          iconPath.setAttribute("d", "M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-16h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3"); // Fullscreen icon
+        }
+      }
+
+      function setFullScreen(enabled) {
+        if (enabled) {
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+          }
+        } else {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          }
+        }
+        updateFullscreenIcon(enabled);
+      }
+
       function openSettings(elements) {
         tempSettings = { ...dashboardState };
         elements.settingsModal.classList.remove("hidden");
@@ -287,10 +312,9 @@
         elements.autoBreak.checked = tempSettings.autoBreak;
         elements.notifications.checked = tempSettings.notifications;
         elements.chimeSound.checked = tempSettings.chimeSound;
-        elements.focusDurationValue.textContent =
-          tempSettings.focusDuration + " min";
-        elements.breakDurationValue.textContent =
-          tempSettings.breakDuration + " min";
+        elements.fullScreen.checked = tempSettings.fullScreen;
+        elements.focusDurationValue.textContent = tempSettings.focusDuration + " min";
+        elements.breakDurationValue.textContent = tempSettings.breakDuration + " min";
         document.querySelectorAll(".gradient-option").forEach((btn) => {
           if (btn.dataset.gradient === tempSettings.backgroundGradient) {
             btn.classList.add("ring-2", "ring-blue-400");
@@ -306,6 +330,7 @@
 
       function applySettings(elements) {
         dashboardState = { ...dashboardState, ...tempSettings };
+        setFullScreen(dashboardState.fullScreen);
         saveSettings();
         applyBackgroundGradient();
         resetTimer(elements);
@@ -400,6 +425,13 @@
             }
           }
         });
+        elements.fullscreenBtn.addEventListener("click", () => {
+          const isFull = !document.fullscreenElement;
+          setFullScreen(isFull);
+          dashboardState.fullScreen = isFull;
+          tempSettings.fullScreen = isFull;
+          saveSettings();
+        });
       }
 
       document.addEventListener("DOMContentLoaded", initDashboard);
@@ -474,20 +506,6 @@
         transition: stroke-dashoffset 0.3s ease-in-out;
       }
 
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-      }
-
-      .float-animation {
-        animation: float 6s ease-in-out infinite;
-      }
-
       @keyframes pulse-glow {
         0%,
         100% {
@@ -500,15 +518,6 @@
 
       .pulse-glow {
         animation: pulse-glow 2s ease-in-out infinite;
-      }
-
-      .hover-lift {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .hover-lift:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
       }
 
       body {
@@ -542,6 +551,74 @@
         .date-display {
           font-size: 1.5rem;
         }
+      }
+
+      select {
+        background: linear-gradient(90deg, #ffe0ec 0%, #b8fff9 100%);
+        color: #6d6875;
+        border: none;
+        border-radius: 1.25rem;
+        box-shadow: 0 2px 8px rgba(255, 182, 193, 0.10);
+        padding-right: 2.5rem;
+        appearance: none;
+        font-weight: 600;
+        transition: box-shadow 0.2s;
+      }
+      select:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #b8fff9, 0 2px 8px rgba(255, 182, 193, 0.18);
+      }
+      select::-ms-expand {
+        display: none;
+      }
+      select {
+        background-image: url('data:image/svg+xml;utf8,<svg fill="%236d6875" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7.293 7.293a1 1 0 011.414 0L10 8.586l1.293-1.293a1 1 0 111.414 1.414l-2 2a1 1 0 01-1.414 0l-2-2a1 1 0 010-1.414z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.25rem 1.25rem;
+      }
+      input[type="checkbox"] {
+        appearance: none;
+        width: 1.4em;
+        height: 1.4em;
+        border-radius: 0.5em;
+        border: 2px solid #b8fff9;
+        background: #fff;
+        transition: background 0.2s, border-color 0.2s;
+        position: relative;
+        cursor: pointer;
+        vertical-align: middle;
+        margin-right: 0.5em;
+      }
+      input[type="checkbox"]:checked {
+        background: linear-gradient(90deg, #ffe0ec 0%, #b8fff9 100%);
+        border-color: #ffb6b9;
+      }
+      input[type="checkbox"]:checked::after {
+        content: '';
+        position: absolute;
+        left: 0.38em;
+        top: 0.18em;
+        width: 0.35em;
+        height: 0.7em;
+        border: solid #6d6875;
+        border-width: 0 0.18em 0.18em 0;
+        transform: rotate(45deg);
+        opacity: 1;
+        transition: opacity 0.2s;
+      }
+      input[type="checkbox"]::after {
+        content: '';
+        position: absolute;
+        left: 0.38em;
+        top: 0.18em;
+        width: 0.35em;
+        height: 0.7em;
+        border: solid #6d6875;
+        border-width: 0 0.18em 0.18em 0;
+        transform: rotate(45deg);
+        opacity: 0;
+        transition: opacity 0.2s;
       }
     </style>
   </head>
@@ -598,6 +675,16 @@
                 stroke-width="2"
                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
               ></path>
+            </svg>
+          </button>
+          <button
+            id="fullscreen-btn"
+            class="p-2 sm:p-3 glass-card rounded-xl backdrop-blur-md border border-white/20 hover:bg-white/30 hover:backdrop-blur-lg transition-all duration-300 modern-btn shadow-md"
+            title="Full Screen"
+            type="button"
+          >
+            <svg id="fullscreen-icon" class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path id="fullscreen-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-16h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3" />
             </svg>
           </button>
           <a
@@ -928,6 +1015,6 @@
         </div>
       </div>
     </div>
-    <audio id="chime-audio" src="/chime.wav" preload="auto"></audio>
+    <audio id="chime-audio" src="/chime.wav" preload="none"></audio>
   </body>
 </html>
