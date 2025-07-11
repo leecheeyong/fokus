@@ -4,7 +4,8 @@ let dashboardState = {
   breakDuration: 5,
   timeFormat: '12',
   autoBreak: false,
-  notifications: true
+  notifications: true,
+  backgroundGradient: 'gradient-bg'
 };
 
 let timerState = {
@@ -57,6 +58,7 @@ function loadSettings() {
   if (saved) {
     dashboardState = { ...dashboardState, ...JSON.parse(saved) };
   }
+  applyBackgroundGradient();
 }
 
 function saveSettings() {
@@ -225,6 +227,13 @@ function updateProgressCircle(elements) {
   elements.progressCircle.setAttribute('stroke', timerState.isBreak ? 'url(#break-gradient)' : 'url(#gradient)');
 }
 
+function applyBackgroundGradient() {
+  const gradients = ['gradient-bg', 'gradient-sunset', 'gradient-mint', 'gradient-night'];
+  const body = document.body;
+  gradients.forEach(g => body.classList.remove(g));
+  body.classList.add(dashboardState.backgroundGradient || 'gradient-bg');
+}
+
 function openSettings(elements) {
   elements.settingsModal.classList.remove('hidden');
   elements.focusDuration.value = dashboardState.focusDuration;
@@ -234,6 +243,14 @@ function openSettings(elements) {
   elements.notifications.checked = dashboardState.notifications;
   elements.focusDurationValue.textContent = dashboardState.focusDuration + ' min';
   elements.breakDurationValue.textContent = dashboardState.breakDuration + ' min';
+  // Highlight selected gradient
+  document.querySelectorAll('.gradient-option').forEach(btn => {
+    if (btn.dataset.gradient === dashboardState.backgroundGradient) {
+      btn.classList.add('ring-2', 'ring-blue-400');
+    } else {
+      btn.classList.remove('ring-2', 'ring-blue-400');
+    }
+  });
 }
 
 function closeSettings(elements) {
@@ -247,6 +264,7 @@ function applySettings(elements) {
   dashboardState.autoBreak = elements.autoBreak.checked;
   dashboardState.notifications = elements.notifications.checked;
   saveSettings();
+  applyBackgroundGradient();
   resetTimer(elements);
   closeSettings(elements);
 }
@@ -263,9 +281,15 @@ function resetToDefaults(elements) {
 function setupEventListeners(elements) {
   elements.themeToggle.addEventListener('click', () => toggleTheme(elements));
   elements.settingsBtn.addEventListener('click', () => openSettings(elements));
-  elements.closeSettings.addEventListener('click', () => closeSettings(elements));
-  elements.saveSettings.addEventListener('click', () => applySettings(elements));
-  elements.resetSettings.addEventListener('click', () => resetToDefaults(elements));
+  if (elements.closeSettings) {
+    elements.closeSettings.addEventListener('click', () => closeSettings(elements));
+  }
+  if (elements.saveSettings) {
+    elements.saveSettings.addEventListener('click', () => applySettings(elements));
+  }
+  if (elements.resetSettings) {
+    elements.resetSettings.addEventListener('click', () => resetToDefaults(elements));
+  }
   elements.timerStart.addEventListener('click', () => startTimer(elements));
   elements.timerPause.addEventListener('click', () => pauseTimer(elements));
   elements.timerReset.addEventListener('click', () => resetTimer(elements));
@@ -302,6 +326,14 @@ function setupEventListeners(elements) {
         startTimer(elements);
       }
     }
+  });
+  document.querySelectorAll('.gradient-option').forEach(btn => {
+    btn.addEventListener('click', function() {
+      dashboardState.backgroundGradient = this.dataset.gradient;
+      applyBackgroundGradient();
+      document.querySelectorAll('.gradient-option').forEach(b => b.classList.remove('ring-2', 'ring-blue-400'));
+      this.classList.add('ring-2', 'ring-blue-400');
+    });
   });
 }
 
