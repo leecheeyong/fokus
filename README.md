@@ -3,3 +3,5 @@
 # Fokus
 Concentrate unlike a normie
 
+![](/demo.webp)
+
