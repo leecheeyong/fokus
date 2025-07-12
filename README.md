@@ -11,9 +11,9 @@ Concentrate unlike a normie, built with ❤️ for productivity
 - [x] Auto-start breaks option
 - [x] Light and dark themes
 - [x] Multiple background gradients and custom gradients
-- [x]Fullscreen mode
-- [x]Friendly to all screen sizes
-- [x]Lightweight, minimalist & straight to the point design
+- [x] Fullscreen mode
+- [x] Friendly to all screen sizes
+- [x] Lightweight, minimalist & straight to the point design
 
 ## Usage
 - Goto [`fokus.dino.icu`](https://fokus.dino.icu)
