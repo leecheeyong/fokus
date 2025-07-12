@@ -6,7 +6,7 @@
     <title>Fokus Dashboard</title>
     <link rel="icon" type="image/x-icon" href="/logo.png" />
     <meta name="description" content="Concentrate unlike a normie with Fokus" />
-    <meta name="keywords" content="fokus, focus, dashboard, concentrate">
+    <meta name="keywords" content="fokus, focus, dashboard, concentrate" />
     <meta property="og:image" content="/logo.png" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script>
@@ -222,7 +222,7 @@
           setTimeout(() => {
             audio.pause();
             audio.currentTime = 0;
-          }, 5000); 
+          }, 5000);
         }
         timerState.isBreak = !timerState.isBreak;
         if (dashboardState.autoBreak && timerState.isBreak) {
@@ -294,11 +294,16 @@
         ];
         const body = document.body;
         gradients.forEach((g) => body.classList.remove(g));
-        if (dashboardState.customGradient && dashboardState.customGradient.trim() !== "") {
+        if (
+          dashboardState.customGradient &&
+          dashboardState.customGradient.trim() !== ""
+        ) {
           body.style.background = dashboardState.customGradient;
         } else {
           body.style.background = "";
-          body.classList.add(dashboardState.backgroundGradient || "gradient-bg");
+          body.classList.add(
+            dashboardState.backgroundGradient || "gradient-bg",
+          );
         }
       }
 
@@ -307,7 +312,10 @@
         if (isFull) {
           iconPath.setAttribute("d", "M6 18L18 6M6 6l12 12");
         } else {
-          iconPath.setAttribute("d", "M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-16h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3"); 
+          iconPath.setAttribute(
+            "d",
+            "M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-16h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3",
+          );
         }
       }
 
@@ -333,8 +341,10 @@
         elements.autoBreak.checked = tempSettings.autoBreak;
         elements.notifications.checked = tempSettings.notifications;
         elements.chimeSound.checked = tempSettings.chimeSound;
-        elements.focusDurationValue.textContent = tempSettings.focusDuration + " min";
-        elements.breakDurationValue.textContent = tempSettings.breakDuration + " min";
+        elements.focusDurationValue.textContent =
+          tempSettings.focusDuration + " min";
+        elements.breakDurationValue.textContent =
+          tempSettings.breakDuration + " min";
         document.querySelectorAll(".gradient-option").forEach((btn) => {
           if (btn.dataset.gradient === tempSettings.backgroundGradient) {
             btn.classList.add("ring-2", "ring-blue-400");
@@ -349,8 +359,13 @@
         const color1 = document.getElementById("gradient-color1");
         const color2 = document.getElementById("gradient-color2");
         const direction = document.getElementById("gradient-direction");
-        if (tempSettings.customGradient && tempSettings.customGradient.startsWith("linear-gradient")) {
-          const match = tempSettings.customGradient.match(/linear-gradient\\(([^,]+),\\s*([^,]+),\\s*([^\\)]+)\\)/);
+        if (
+          tempSettings.customGradient &&
+          tempSettings.customGradient.startsWith("linear-gradient")
+        ) {
+          const match = tempSettings.customGradient.match(
+            /linear-gradient\\(([^,]+),\\s*([^,]+),\\s*([^\\)]+)\\)/,
+          );
           if (match) {
             direction.value = match[1].trim();
             color1.value = match[2].trim();
@@ -444,7 +459,8 @@
               .querySelectorAll(".gradient-option")
               .forEach((b) => b.classList.remove("ring-2", "ring-blue-400"));
             this.classList.add("ring-2", "ring-blue-400");
-            const customGradientInput = document.getElementById("custom-gradient");
+            const customGradientInput =
+              document.getElementById("custom-gradient");
             if (customGradientInput) customGradientInput.value = "";
           });
         });
@@ -460,7 +476,9 @@
               document
                 .querySelectorAll(".gradient-option")
                 .forEach((b) => b.classList.remove("ring-2", "ring-blue-400"));
-              const match = this.value.match(/linear-gradient\\(([^,]+),\\s*([^,]+),\\s*([^\\)]+)\\)/);
+              const match = this.value.match(
+                /linear-gradient\\(([^,]+),\\s*([^,]+),\\s*([^\\)]+)\\)/,
+              );
               if (match) {
                 direction.value = match[1].trim();
                 color1.value = match[2].trim();
@@ -649,7 +667,7 @@
         color: #6d6875;
         border: none;
         border-radius: 1.25rem;
-        box-shadow: 0 2px 8px rgba(255, 182, 193, 0.10);
+        box-shadow: 0 2px 8px rgba(255, 182, 193, 0.1);
         padding-right: 2.5rem;
         appearance: none;
         font-weight: 600;
@@ -657,7 +675,9 @@
       }
       select:focus {
         outline: none;
-        box-shadow: 0 0 0 2px #b8fff9, 0 2px 8px rgba(255, 182, 193, 0.18);
+        box-shadow:
+          0 0 0 2px #b8fff9,
+          0 2px 8px rgba(255, 182, 193, 0.18);
       }
       select::-ms-expand {
         display: none;
@@ -675,7 +695,9 @@
         border-radius: 0.5em;
         border: 2px solid #b8fff9;
         background: #fff;
-        transition: background 0.2s, border-color 0.2s;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
         position: relative;
         cursor: pointer;
         vertical-align: middle;
@@ -686,7 +708,7 @@
         border-color: #ffb6b9;
       }
       input[type="checkbox"]:checked::after {
-        content: '';
+        content: "";
         position: absolute;
         left: 0.38em;
         top: 0.18em;
@@ -699,7 +721,7 @@
         transition: opacity 0.2s;
       }
       input[type="checkbox"]::after {
-        content: '';
+        content: "";
         position: absolute;
         left: 0.38em;
         top: 0.18em;
@@ -713,8 +735,8 @@
       }
       .settings-scrollbar {
         overflow-y: auto;
-        scrollbar-width: none; 
-        -ms-overflow-style: none; 
+        scrollbar-width: none;
+        -ms-overflow-style: none;
         max-height: 70dvh;
       }
       .settings-scrollbar::-webkit-scrollbar {
@@ -785,8 +807,20 @@
             title="Full Screen"
             type="button"
           >
-            <svg id="fullscreen-icon" class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path id="fullscreen-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-16h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3" />
+            <svg
+              id="fullscreen-icon"
+              class="w-4 h-4 sm:w-5 sm:h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                id="fullscreen-icon-path"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-16h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3"
+              />
             </svg>
           </button>
           <a
@@ -939,175 +973,225 @@
       class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden"
     >
       <div class="flex items-center justify-center min-h-screen p-4 sm:p-6">
-        <div class="glass-card rounded-3xl p-4 sm:p-6 md:p-8 max-w-full w-full sm:max-w-md max-h-[90dvh] sm:max-h-[90vh] overflow-hidden">
-          <div class="settings-scrollbar px-1" style="max-height:70dvh;">
-          <div class="flex items-center justify-between mb-6 sm:mb-8">
-            <h2 class="text-xl sm:text-2xl font-light text-white">Settings</h2>
-            <button
-              id="close-settings"
-              class="p-2 glass-card border border-white/20 bg-white/10 hover:bg-white/20 hover:backdrop-blur-lg rounded-xl transition-colors shadow-md"
-            >
-              <svg
-                class="w-5 h-5 sm:w-6 sm:h-6 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+        <div
+          class="glass-card rounded-3xl p-4 sm:p-6 md:p-8 max-w-full w-full sm:max-w-md max-h-[90dvh] sm:max-h-[90vh] overflow-hidden"
+        >
+          <div class="settings-scrollbar px-1" style="max-height: 70dvh">
+            <div class="flex items-center justify-between mb-6 sm:mb-8">
+              <h2 class="text-xl sm:text-2xl font-light text-white">
+                Settings
+              </h2>
+              <button
+                id="close-settings"
+                class="p-2 glass-card border border-white/20 bg-white/10 hover:bg-white/20 hover:backdrop-blur-lg rounded-xl transition-colors shadow-md"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            </button>
-          </div>
-          <div class="space-y-6 sm:space-y-8">
-            <div>
-              <label class="block text-sm font-medium text-white/80 mb-4"
-                >Focus Duration</label
-              >
-              <input
-                type="range"
-                id="focus-duration"
-                min="5"
-                max="120"
-                value="25"
-                class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
-              />
-              <div class="flex justify-between text-sm text-white/60 mt-2">
-                <span>5 min</span>
-                <span id="focus-duration-value" class="text-white">25 min</span>
-                <span>120 min</span>
-              </div>
+                <svg
+                  class="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-white/80 mb-4"
-                >Break Duration</label
-              >
-              <input
-                type="range"
-                id="break-duration"
-                min="5"
-                max="30"
-                value="5"
-                class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
-              />
-              <div class="flex justify-between text-sm text-white/60 mt-2">
-                <span>5 min</span>
-                <span id="break-duration-value" class="text-white">5 min</span>
-                <span>30 min</span>
+            <div class="space-y-6 sm:space-y-8">
+              <div>
+                <label class="block text-sm font-medium text-white/80 mb-4"
+                  >Focus Duration</label
+                >
+                <input
+                  type="range"
+                  id="focus-duration"
+                  min="5"
+                  max="120"
+                  value="25"
+                  class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
+                />
+                <div class="flex justify-between text-sm text-white/60 mt-2">
+                  <span>5 min</span>
+                  <span id="focus-duration-value" class="text-white"
+                    >25 min</span
+                  >
+                  <span>120 min</span>
+                </div>
               </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-white/80 mb-4"
-                >Time Format</label
-              >
-              <select
-                id="time-format"
-                class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="12">12 Hour</option>
-                <option value="24">24 Hour</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-white/80 mb-4"
-                >Background Gradient</label
-              >
-              <div class="flex gap-2 mb-2">
-                <button
-                  type="button"
-                  class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
-                  data-gradient="gradient-bg"
-                  style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
-                ></button>
-                <button
-                  type="button"
-                  class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
-                  data-gradient="gradient-sunset"
-                  style="background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);"
-                ></button>
-                <button
-                  type="button"
-                  class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
-                  data-gradient="gradient-mint"
-                  style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"
-                ></button>
-                <button
-                  type="button"
-                  class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
-                  data-gradient="gradient-night"
-                  style="background: linear-gradient(135deg, #232526 0%, #414345 100%);"
-                ></button>
+              <div>
+                <label class="block text-sm font-medium text-white/80 mb-4"
+                  >Break Duration</label
+                >
+                <input
+                  type="range"
+                  id="break-duration"
+                  min="5"
+                  max="30"
+                  value="5"
+                  class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
+                />
+                <div class="flex justify-between text-sm text-white/60 mt-2">
+                  <span>5 min</span>
+                  <span id="break-duration-value" class="text-white"
+                    >5 min</span
+                  >
+                  <span>30 min</span>
+                </div>
               </div>
-              <div class="flex gap-2 mb-2">
-                <input type="color" id="gradient-color1" value="#667eea" class="w-8 h-8 rounded-full border border-white/30" title="Gradient Color 1" />
-                <input type="color" id="gradient-color2" value="#764ba2" class="w-8 h-8 rounded-full border border-white/30" title="Gradient Color 2" />
-                <select id="gradient-direction" class="rounded-lg bg-white/10 border border-white/20 text-white px-2 py-1">
-                  <option value="135deg">↗ 135°</option>
-                  <option value="90deg">→ 90°</option>
-                  <option value="180deg">↓ 180°</option>
-                  <option value="45deg">↘ 45°</option>
-                  <option value="0deg">→ 0°</option>
+              <div>
+                <label class="block text-sm font-medium text-white/80 mb-4"
+                  >Time Format</label
+                >
+                <select
+                  id="time-format"
+                  class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="12">12 Hour</option>
+                  <option value="24">24 Hour</option>
                 </select>
               </div>
-              <input
-                type="text"
-                id="custom-gradient"
-                class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Custom CSS gradient, e.g. linear-gradient(135deg, #ff9966, #ff5e62)"
-              />
-              <div class="text-xs text-white/60 mt-1">Use color pickers or enter custom CSS gradient above.</div>
+              <div>
+                <label class="block text-sm font-medium text-white/80 mb-4"
+                  >Background Gradient</label
+                >
+                <div class="flex gap-2 mb-2">
+                  <button
+                    type="button"
+                    class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
+                    data-gradient="gradient-bg"
+                    style="
+                      background: linear-gradient(
+                        135deg,
+                        #667eea 0%,
+                        #764ba2 100%
+                      );
+                    "
+                  ></button>
+                  <button
+                    type="button"
+                    class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
+                    data-gradient="gradient-sunset"
+                    style="
+                      background: linear-gradient(
+                        135deg,
+                        #ff9966 0%,
+                        #ff5e62 100%
+                      );
+                    "
+                  ></button>
+                  <button
+                    type="button"
+                    class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
+                    data-gradient="gradient-mint"
+                    style="
+                      background: linear-gradient(
+                        135deg,
+                        #43e97b 0%,
+                        #38f9d7 100%
+                      );
+                    "
+                  ></button>
+                  <button
+                    type="button"
+                    class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
+                    data-gradient="gradient-night"
+                    style="
+                      background: linear-gradient(
+                        135deg,
+                        #232526 0%,
+                        #414345 100%
+                      );
+                    "
+                  ></button>
+                </div>
+                <div class="flex gap-2 mb-2">
+                  <input
+                    type="color"
+                    id="gradient-color1"
+                    value="#667eea"
+                    class="w-8 h-8 rounded-full border border-white/30"
+                    title="Gradient Color 1"
+                  />
+                  <input
+                    type="color"
+                    id="gradient-color2"
+                    value="#764ba2"
+                    class="w-8 h-8 rounded-full border border-white/30"
+                    title="Gradient Color 2"
+                  />
+                  <select
+                    id="gradient-direction"
+                    class="rounded-lg bg-white/10 border border-white/20 text-white px-2 py-1"
+                  >
+                    <option value="135deg">↗ 135°</option>
+                    <option value="90deg">→ 90°</option>
+                    <option value="180deg">↓ 180°</option>
+                    <option value="45deg">↘ 45°</option>
+                    <option value="0deg">→ 0°</option>
+                  </select>
+                </div>
+                <input
+                  type="text"
+                  id="custom-gradient"
+                  class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Custom CSS gradient, e.g. linear-gradient(135deg, #ff9966, #ff5e62)"
+                />
+                <div class="text-xs text-white/60 mt-1">
+                  Use color pickers or enter custom CSS gradient above.
+                </div>
+              </div>
+              <div class="space-y-4">
+                <label class="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="auto-break"
+                    class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500"
+                  />
+                  <span class="ml-3 text-white/80 text-sm sm:text-base"
+                    >Auto-start breaks</span
+                  >
+                </label>
+                <label class="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="notifications"
+                    class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500"
+                  />
+                  <span class="ml-3 text-white/80 text-sm sm:text-base"
+                    >Enable notifications</span
+                  >
+                </label>
+                <label class="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="chime-sound"
+                    class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500"
+                  />
+                  <span class="ml-3 text-white/80 text-sm sm:text-base"
+                    >Chime sound on session end</span
+                  >
+                </label>
+              </div>
             </div>
-            <div class="space-y-4">
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  id="auto-break"
-                  class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500"
-                />
-                <span class="ml-3 text-white/80 text-sm sm:text-base"
-                  >Auto-start breaks</span
-                >
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  id="notifications"
-                  class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500"
-                />
-                <span class="ml-3 text-white/80 text-sm sm:text-base"
-                  >Enable notifications</span
-                >
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  id="chime-sound"
-                  class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500"
-                />
-                <span class="ml-3 text-white/80 text-sm sm:text-base"
-                  >Chime sound on session end</span
-                >
-              </label>
+            <div
+              class="mt-8 sm:mt-10 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4"
+            >
+              <button
+                id="reset-settings"
+                class="px-6 py-3 glass-card border border-white/20 bg-white/10 text-white/70 hover:text-white hover:bg-white/20 hover:backdrop-blur-lg rounded-xl transition-all duration-300 text-sm sm:text-base shadow-md"
+              >
+                Reset
+              </button>
+              <button
+                id="save-settings"
+                class="px-6 py-3 glass-card border border-white/20 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:bg-white/20 hover:backdrop-blur-lg modern-btn text-sm sm:text-base shadow-md"
+              >
+                Save Changes
+              </button>
             </div>
-          </div>
-          <div
-            class="mt-8 sm:mt-10 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4"
-          >
-            <button
-              id="reset-settings"
-              class="px-6 py-3 glass-card border border-white/20 bg-white/10 text-white/70 hover:text-white hover:bg-white/20 hover:backdrop-blur-lg rounded-xl transition-all duration-300 text-sm sm:text-base shadow-md"
-            >
-              Reset
-            </button>
-            <button
-              id="save-settings"
-              class="px-6 py-3 glass-card border border-white/20 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:bg-white/20 hover:backdrop-blur-lg modern-btn text-sm sm:text-base shadow-md"
-            >
-              Save Changes
-            </button>
           </div>
         </div>
       </div>
