@@ -622,6 +622,17 @@
           Cantarell, sans-serif;
       }
 
+      * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+      }
+      *::-webkit-scrollbar {
+        width: 0 !important;
+        height: 0 !important;
+        display: none !important;
+        background: transparent !important;
+      }
+
       @media (max-width: 640px) {
         .time-display {
           font-size: 3rem;
@@ -736,7 +747,7 @@
       .settings-scrollbar {
         overflow-y: auto;
         scrollbar-width: none;
-        -ms-overflow-style: none; 
+        -ms-overflow-style: none;
         max-height: 70dvh;
       }
       .settings-scrollbar::-webkit-scrollbar {
@@ -976,7 +987,7 @@
         <div
           class="glass-card rounded-3xl p-4 sm:p-6 md:p-8 max-w-full w-full sm:max-w-md max-h-[90dvh] sm:max-h-[90vh] overflow-hidden"
         >
-          <div class="settings-scrollbar px-1" style="max-height: 70dvh;">
+          <div class="settings-scrollbar px-1" style="max-height: 70dvh">
             <div class="flex items-center justify-between mb-6 sm:mb-8">
               <h2 class="text-xl sm:text-2xl font-light text-white">
                 Settings
