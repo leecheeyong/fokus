@@ -76,11 +76,20 @@
         if (saved) {
           dashboardState = { ...dashboardState, ...JSON.parse(saved) };
         }
+        const customGradient = localStorage.getItem("customGradient");
+        if (customGradient) {
+          dashboardState.customGradient = customGradient;
+        }
         applyBackgroundGradient();
       }
 
       function saveSettings() {
         localStorage.setItem("focusDashboard", JSON.stringify(dashboardState));
+        if (dashboardState.customGradient) {
+          localStorage.setItem("customGradient", dashboardState.customGradient);
+        } else {
+          localStorage.removeItem("customGradient");
+        }
       }
 
       function initTheme(elements) {
@@ -210,6 +219,10 @@
           const audio = document.getElementById("chime-audio");
           audio.currentTime = 0;
           audio.play();
+          setTimeout(() => {
+            audio.pause();
+            audio.currentTime = 0;
+          }, 5000); 
         }
         timerState.isBreak = !timerState.isBreak;
         if (dashboardState.autoBreak && timerState.isBreak) {
@@ -281,15 +294,20 @@
         ];
         const body = document.body;
         gradients.forEach((g) => body.classList.remove(g));
-        body.classList.add(dashboardState.backgroundGradient || "gradient-bg");
+        if (dashboardState.customGradient && dashboardState.customGradient.trim() !== "") {
+          body.style.background = dashboardState.customGradient;
+        } else {
+          body.style.background = "";
+          body.classList.add(dashboardState.backgroundGradient || "gradient-bg");
+        }
       }
 
       function updateFullscreenIcon(isFull) {
         const iconPath = document.getElementById("fullscreen-icon-path");
         if (isFull) {
-          iconPath.setAttribute("d", "M6 18L18 6M6 6l12 12"); // X icon for exit
+          iconPath.setAttribute("d", "M6 18L18 6M6 6l12 12");
         } else {
-          iconPath.setAttribute("d", "M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-16h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3"); // Fullscreen icon
+          iconPath.setAttribute("d", "M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-16h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3"); 
         }
       }
 
@@ -324,6 +342,25 @@
             btn.classList.remove("ring-2", "ring-blue-400");
           }
         });
+        const customGradientInput = document.getElementById("custom-gradient");
+        if (customGradientInput) {
+          customGradientInput.value = tempSettings.customGradient || "";
+        }
+        const color1 = document.getElementById("gradient-color1");
+        const color2 = document.getElementById("gradient-color2");
+        const direction = document.getElementById("gradient-direction");
+        if (tempSettings.customGradient && tempSettings.customGradient.startsWith("linear-gradient")) {
+          const match = tempSettings.customGradient.match(/linear-gradient\\(([^,]+),\\s*([^,]+),\\s*([^\\)]+)\\)/);
+          if (match) {
+            direction.value = match[1].trim();
+            color1.value = match[2].trim();
+            color2.value = match[3].trim();
+          }
+        } else {
+          color1.value = "#667eea";
+          color2.value = "#764ba2";
+          direction.value = "135deg";
+        }
       }
 
       function closeSettings(elements) {
@@ -402,12 +439,50 @@
         document.querySelectorAll(".gradient-option").forEach((btn) => {
           btn.addEventListener("click", function () {
             tempSettings.backgroundGradient = this.dataset.gradient;
+            tempSettings.customGradient = "";
             document
               .querySelectorAll(".gradient-option")
               .forEach((b) => b.classList.remove("ring-2", "ring-blue-400"));
             this.classList.add("ring-2", "ring-blue-400");
+            const customGradientInput = document.getElementById("custom-gradient");
+            if (customGradientInput) customGradientInput.value = "";
           });
         });
+        const customGradientInput = document.getElementById("custom-gradient");
+        const color1 = document.getElementById("gradient-color1");
+        const color2 = document.getElementById("gradient-color2");
+        const direction = document.getElementById("gradient-direction");
+        if (customGradientInput) {
+          customGradientInput.addEventListener("input", function () {
+            tempSettings.customGradient = this.value;
+            if (this.value.trim() !== "") {
+              tempSettings.backgroundGradient = "";
+              document
+                .querySelectorAll(".gradient-option")
+                .forEach((b) => b.classList.remove("ring-2", "ring-blue-400"));
+              const match = this.value.match(/linear-gradient\\(([^,]+),\\s*([^,]+),\\s*([^\\)]+)\\)/);
+              if (match) {
+                direction.value = match[1].trim();
+                color1.value = match[2].trim();
+                color2.value = match[3].trim();
+              }
+            }
+          });
+        }
+        if (color1 && color2 && direction) {
+          function updateCustomGradientFromPickers() {
+            const grad = `linear-gradient(${direction.value}, ${color1.value}, ${color2.value})`;
+            customGradientInput.value = grad;
+            tempSettings.customGradient = grad;
+            tempSettings.backgroundGradient = "";
+            document
+              .querySelectorAll(".gradient-option")
+              .forEach((b) => b.classList.remove("ring-2", "ring-blue-400"));
+          }
+          color1.addEventListener("input", updateCustomGradientFromPickers);
+          color2.addEventListener("input", updateCustomGradientFromPickers);
+          direction.addEventListener("change", updateCustomGradientFromPickers);
+        }
         elements.settingsModal.addEventListener("click", (e) => {
           if (e.target === elements.settingsModal) {
             closeSettings(elements);
@@ -536,6 +611,19 @@
         .date-display {
           font-size: 1rem;
         }
+        .settings-scrollbar {
+          max-height: 60dvh;
+        }
+        .glass-card {
+          padding: 1rem !important;
+        }
+        .settings-scrollbar input,
+        .settings-scrollbar select {
+          font-size: 1rem;
+        }
+        .settings-scrollbar label {
+          font-size: 0.95rem;
+        }
       }
 
       @media (min-width: 641px) and (max-width: 1024px) {
@@ -623,12 +711,23 @@
         opacity: 0;
         transition: opacity 0.2s;
       }
+      .settings-scrollbar {
+        overflow-y: auto;
+        scrollbar-width: none; 
+        -ms-overflow-style: none; 
+        max-height: 70dvh;
+      }
+      .settings-scrollbar::-webkit-scrollbar {
+        width: 0 !important;
+        display: none;
+        background: transparent;
+      }
     </style>
   </head>
   <body class="min-h-screen gradient-bg transition-all duration-500">
     <div
       id="app"
-      class="min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 lg:p-12"
+      class="min-h-screen flex flex-col justify-center items-center p-2 sm:p-4 lg:p-12"
     >
       <header
         class="flex justify-between items-center w-full max-w-6xl mx-auto mb-8 lg:mb-12"
@@ -714,7 +813,7 @@
           class="w-full max-w-5xl mx-auto mb-8 lg:mb-12 flex-1 flex items-center justify-center"
         >
           <div
-            class="glass-card rounded-3xl w-full flex flex-col sm:flex-row items-center justify-between gap-8 sm:gap-12 p-6 sm:p-12 lg:p-20 shadow-xl min-h-[400px] lg:min-h-[500px]"
+            class="glass-card rounded-3xl w-full flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-8 lg:gap-12 p-4 sm:p-8 lg:p-20 shadow-xl min-h-[320px] sm:min-h-[400px] lg:min-h-[500px]"
           >
             <div
               class="flex-1 flex flex-col items-center justify-center min-w-[140px]"
@@ -840,7 +939,8 @@
       class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden"
     >
       <div class="flex items-center justify-center min-h-screen p-4 sm:p-6">
-        <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full">
+        <div class="glass-card rounded-3xl p-4 sm:p-6 md:p-8 max-w-full w-full sm:max-w-md max-h-[90dvh] sm:max-h-[90vh] overflow-hidden">
+          <div class="settings-scrollbar px-1" style="max-height:70dvh;">
           <div class="flex items-center justify-between mb-6 sm:mb-8">
             <h2 class="text-xl sm:text-2xl font-light text-white">Settings</h2>
             <button
@@ -915,56 +1015,50 @@
               <label class="block text-sm font-medium text-white/80 mb-4"
                 >Background Gradient</label
               >
-              <div class="flex gap-2">
+              <div class="flex gap-2 mb-2">
                 <button
                   type="button"
                   class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
                   data-gradient="gradient-bg"
-                  style="
-                    background: linear-gradient(
-                      135deg,
-                      #667eea 0%,
-                      #764ba2 100%
-                    );
-                  "
+                  style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
                 ></button>
                 <button
                   type="button"
                   class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
                   data-gradient="gradient-sunset"
-                  style="
-                    background: linear-gradient(
-                      135deg,
-                      #ff9966 0%,
-                      #ff5e62 100%
-                    );
-                  "
+                  style="background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);"
                 ></button>
                 <button
                   type="button"
                   class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
                   data-gradient="gradient-mint"
-                  style="
-                    background: linear-gradient(
-                      135deg,
-                      #43e97b 0%,
-                      #38f9d7 100%
-                    );
-                  "
+                  style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"
                 ></button>
                 <button
                   type="button"
                   class="w-8 h-8 rounded-full border-2 border-white/40 focus:ring-2 focus:ring-blue-400 gradient-option"
                   data-gradient="gradient-night"
-                  style="
-                    background: linear-gradient(
-                      135deg,
-                      #232526 0%,
-                      #414345 100%
-                    );
-                  "
+                  style="background: linear-gradient(135deg, #232526 0%, #414345 100%);"
                 ></button>
               </div>
+              <div class="flex gap-2 mb-2">
+                <input type="color" id="gradient-color1" value="#667eea" class="w-8 h-8 rounded-full border border-white/30" title="Gradient Color 1" />
+                <input type="color" id="gradient-color2" value="#764ba2" class="w-8 h-8 rounded-full border border-white/30" title="Gradient Color 2" />
+                <select id="gradient-direction" class="rounded-lg bg-white/10 border border-white/20 text-white px-2 py-1">
+                  <option value="135deg">↗ 135°</option>
+                  <option value="90deg">→ 90°</option>
+                  <option value="180deg">↓ 180°</option>
+                  <option value="45deg">↘ 45°</option>
+                  <option value="0deg">→ 0°</option>
+                </select>
+              </div>
+              <input
+                type="text"
+                id="custom-gradient"
+                class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Custom CSS gradient, e.g. linear-gradient(135deg, #ff9966, #ff5e62)"
+              />
+              <div class="text-xs text-white/60 mt-1">Use color pickers or enter custom CSS gradient above.</div>
             </div>
             <div class="space-y-4">
               <label class="flex items-center">
@@ -1018,6 +1112,6 @@
         </div>
       </div>
     </div>
-    <audio id="chime-audio" src="/chime.wav" preload="none"></audio>
+    <audio id="chime-audio" src="/chime.wav" preload="none" loop></audio>
   </body>
 </html>
